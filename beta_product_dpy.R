@@ -193,12 +193,30 @@ sample_allocations <- function(y, atoms, weights, sigma2) {
   allocations <- numeric(n)
 
   for (i in 1:n) {
-    # Compute probabilities for each cluster
-    probs <- numeric(K)
+    # Compute log probabilities for numerical stability
+    log_probs <- numeric(K)
     for (k in 1:K) {
-      probs[k] <- weights[k] * dnorm(y[i], mean = atoms[k], sd = sqrt(sigma2))
+      if (weights[k] > 0) {
+        log_probs[k] <- log(weights[k]) + dnorm(y[i], mean = atoms[k], sd = sqrt(sigma2), log = TRUE)
+      } else {
+        log_probs[k] <- -Inf
+      }
     }
-    probs <- probs / sum(probs)
+
+    # Convert back to probabilities using log-sum-exp trick
+    max_log_prob <- max(log_probs[is.finite(log_probs)])
+    if (!is.finite(max_log_prob)) {
+      # Fallback: uniform allocation if all probabilities are invalid
+      probs <- rep(1/K, K)
+    } else {
+      probs <- exp(log_probs - max_log_prob)
+      probs <- probs / sum(probs)
+
+      # Check for NAs and replace with uniform if needed
+      if (any(is.na(probs)) || sum(probs) == 0) {
+        probs <- rep(1/K, K)
+      }
+    }
 
     # Sample allocation
     allocations[i] <- sample(1:K, 1, prob = probs)
