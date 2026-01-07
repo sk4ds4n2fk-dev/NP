@@ -42,7 +42,8 @@ gibbs_sampler_dpy <- function(y, K = 20, n_iter = 1000, burn_in = 500, thin = 1,
   dpy <- generate_dpy(d, K, alpha_vec, theta_vec, alpha0, theta0)
   allocations <- vector("list", d)
   for (j in 1:d) {
-    allocations[[j]] <- sample(1:K, n[j], replace = TRUE)
+    # Initialize allocations according to DPY weights (not uniformly)
+    allocations[[j]] <- sample(1:K, n[j], replace = TRUE, prob = dpy$weights[, j])
   }
 
   # MCMC iterations
@@ -186,8 +187,8 @@ update_base_weights <- function(allocations, K, alpha0, theta0) {
     }
   }
 
-  # Normalize weights to sum to 1 (for truncated stick-breaking)
-  W <- W / sum(W)
+  # Don't normalize W here - normalization happens in beta_product_construction
+  # Normalizing here would distort the posterior distribution
 
   return(W)
 }
