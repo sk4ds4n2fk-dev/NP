@@ -64,6 +64,15 @@ beta_product_construction <- function(V, W) {
         pi_matrix[k, j] <- W[k] * V[k, j] * prod(1 - V[1:(k-1), j])
       }
     }
+    # Normalize to ensure proper probability distribution for each process
+    # This is necessary because beta-product doesn't guarantee sum=1
+    total <- sum(pi_matrix[, j])
+    if (total > 0) {
+      pi_matrix[, j] <- pi_matrix[, j] / total
+    } else {
+      # Fallback if all weights are zero
+      pi_matrix[, j] <- rep(1/K, K)
+    }
   }
 
   return(pi_matrix)
