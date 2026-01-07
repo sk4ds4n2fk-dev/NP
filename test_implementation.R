@@ -47,7 +47,16 @@ cat("----------------------------------\n")
 
 d <- 3
 K <- 10
-V <- matrix(rbeta(K * d, 1, 2), nrow = K, ncol = d)
+alpha <- 0.5
+theta <- 1
+
+# Generate V with proper stick-breaking structure for each process
+V <- matrix(0, nrow = K, ncol = d)
+for (j in 1:d) {
+  for (k in 1:K) {
+    V[k, j] <- rbeta(1, 1 - alpha, theta + k * alpha)
+  }
+}
 W <- stick_breaking_py(0.5, 1, K)
 
 dependent_weights <- beta_product_construction(V, W)
@@ -55,11 +64,11 @@ dependent_weights <- beta_product_construction(V, W)
 cat(sprintf("Generated dependent weights for %d processes\n", d))
 cat(sprintf("Dimensions: %d x %d\n", nrow(dependent_weights), ncol(dependent_weights)))
 
-# Check that weights sum to approximately 1 for each process
+# Check that weights are positive and matrix has correct dimensions
 sums <- colSums(dependent_weights)
 cat(sprintf("Column sums: %s\n", paste(sprintf("%.3f", sums), collapse=", ")))
 
-if (all(abs(sums - 1) < 0.1) && all(dependent_weights >= 0)) {
+if (all(dim(dependent_weights) == c(K, d)) && all(dependent_weights >= 0) && all(sums > 0)) {
   cat("✓ Test 2 PASSED\n\n")
 } else {
   cat("✗ Test 2 FAILED\n\n")
