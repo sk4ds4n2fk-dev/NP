@@ -129,21 +129,21 @@ example2_business_cycles <- function() {
 
   # Generate growth rates with different means in different regimes
   us_growth <- numeric(n)
-  eu_growth <- numeric(n)
+  eu_growth_independent <- numeric(n)
 
   for (i in 1:n) {
     if (regimes[i] == 1) {  # Expansion
       us_growth[i] <- rnorm(1, mean = 3.0, sd = 1.5)
-      eu_growth[i] <- rnorm(1, mean = 2.5, sd = 1.2)
+      eu_growth_independent[i] <- rnorm(1, mean = 2.5, sd = 1.2)
     } else {  # Recession
       us_growth[i] <- rnorm(1, mean = -1.5, sd = 2.0)
-      eu_growth[i] <- rnorm(1, mean = -1.0, sd = 1.5)
+      eu_growth_independent[i] <- rnorm(1, mean = -1.0, sd = 1.5)
     }
   }
 
   # Add correlation between US and EU
   correlation <- 0.7
-  eu_growth <- correlation * us_growth + sqrt(1 - correlation^2) * eu_growth
+  eu_growth <- correlation * us_growth + sqrt(1 - correlation^2) * eu_growth_independent
 
   y <- list(us_growth, eu_growth)
 
