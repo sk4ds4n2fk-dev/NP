@@ -184,6 +184,9 @@ update_base_weights <- function(allocations, K, alpha0, theta0) {
     }
   }
 
+  # Normalize to sum to 1
+  W <- W / sum(W)
+
   return(W)
 }
 

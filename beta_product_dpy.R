@@ -36,6 +36,9 @@ stick_breaking_py <- function(alpha, theta, K) {
     }
   }
 
+  # Normalize to sum to 1 (for truncated approximation)
+  pi_weights <- pi_weights / sum(pi_weights)
+
   return(pi_weights)
 }
 
@@ -61,6 +64,8 @@ beta_product_construction <- function(V, W) {
         pi_matrix[k, j] <- W[k] * V[k, j] * prod(1 - V[1:(k-1), j])
       }
     }
+    # Normalize each column to sum to 1
+    pi_matrix[, j] <- pi_matrix[, j] / sum(pi_matrix[, j])
   }
 
   return(pi_matrix)
