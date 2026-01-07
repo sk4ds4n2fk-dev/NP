@@ -21,23 +21,49 @@ This repository provides a complete implementation of Beta-Product Dependent Pit
 
 ## Quick Start
 
+### 🚀 Test Minimo (30 secondi)
 ```r
-# Run tests
+# Apri R e scrivi:
+source("START_HERE.R")
+```
+
+### 📊 Versione Semplificata (2 minuti)
+```r
+# Carica versione semplificata
+source("beta_dpy_simple.R")
+
+# Test rapido
+test_quick()
+
+# Esempio completo con grafici
+example_simple()
+```
+
+### 🔬 Versione Completa
+```r
+# Prima installa i pacchetti
+install.packages(c("MASS", "MCMCpack", "ggplot2"))
+
+# Esegui test completi
 source("test_implementation.R")
 
-# Run quick example
+# Esegui esempi
 source("examples.R")
 quick_test()
-
-# Run all examples
 run_all_examples()
 ```
 
 ## Requirements
 
+Solo R base per la versione semplificata. Per la versione completa:
+
 ```r
 install.packages(c("MASS", "MCMCpack", "ggplot2"))
 ```
+
+## Guida in Italiano
+
+Vedi **GUIDA_RAPIDA.md** per istruzioni dettagliate in italiano.
 
 ## Documentation
 
