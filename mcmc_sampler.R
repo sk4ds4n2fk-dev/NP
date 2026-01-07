@@ -186,6 +186,9 @@ update_base_weights <- function(allocations, K, alpha0, theta0) {
     }
   }
 
+  # Normalize weights to sum to 1 (for truncated stick-breaking)
+  W <- W / sum(W)
+
   return(W)
 }
 
