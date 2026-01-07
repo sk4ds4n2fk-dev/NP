@@ -274,9 +274,10 @@ if (all(dim(cor_matrix) == c(d, d)) && all(diag(cor_matrix) == 1)) {
 cat("Test 10: ESS Computation\n")
 cat("------------------------\n")
 
+# Compute ESS for posterior mean weights (effective number of mixture components)
 ess <- compute_ess(mean_weights)
 
-cat(sprintf("ESS for each process: %s\n",
+cat(sprintf("Effective number of components for each process: %s\n",
             paste(sprintf("%.2f", ess), collapse=", ")))
 
 if (length(ess) == d && all(ess > 0) && all(ess <= K)) {

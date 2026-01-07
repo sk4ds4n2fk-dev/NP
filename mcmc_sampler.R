@@ -89,7 +89,6 @@ gibbs_sampler_dpy <- function(y, K = 20, n_iter = 1000, burn_in = 500, thin = 1,
   }
 
   # Compute diagnostics
-  ess <- apply(weights_samples, c(2, 3), compute_ess)
   n_clusters <- lapply(allocations_samples, function(alloc_list) {
     sapply(alloc_list, count_clusters)
   })
@@ -101,7 +100,6 @@ gibbs_sampler_dpy <- function(y, K = 20, n_iter = 1000, burn_in = 500, thin = 1,
     sigma2 = sigma2_samples,
     log_likelihood = ll_samples,
     n_clusters = n_clusters,
-    ess = ess,
     hyperparameters = list(
       alpha_vec = alpha_vec,
       theta_vec = theta_vec,
@@ -168,7 +166,11 @@ update_base_weights <- function(allocations, K, alpha0, theta0) {
 
   for (k in 1:K) {
     # Number of observations in clusters > k
-    n_greater <- sum(counts[(k+1):K])
+    if (k < K) {
+      n_greater <- sum(counts[(k+1):K])
+    } else {
+      n_greater <- 0
+    }
 
     # Beta posterior parameters
     a_post <- 1 - alpha0 + counts[k]
@@ -202,7 +204,11 @@ update_beta_variables <- function(allocations, K, alpha, theta) {
   v <- numeric(K)
   for (k in 1:K) {
     # Number of observations in clusters > k
-    n_greater <- sum(counts[(k+1):K])
+    if (k < K) {
+      n_greater <- sum(counts[(k+1):K])
+    } else {
+      n_greater <- 0
+    }
 
     # Beta posterior parameters
     a_post <- 1 - alpha + counts[k]
